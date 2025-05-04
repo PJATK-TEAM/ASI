@@ -6,3 +6,8 @@ kedro[jupyter]~=0.19.12
 notebook
 scikit-learn~=1.5.1
 seaborn~=0.12.1
+pytest~=7.2
+pytest-cov~=3.0
+pytest-mock>=1.7.1, <2.0
+ruff~=0.1.8
+setuptools; python_version >= "3.12"
