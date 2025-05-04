@@ -1,10 +1,164 @@
-"""
-This is a boilerplate pipeline 'data_preparation'
-generated using Kedro 0.19.12
-"""
-
 from kedro.pipeline import node, Pipeline, pipeline  # noqa
-
+from .nodes import (preprocess_train_data,
+                    preprocess_val_data,
+                    preprocess_test_data,
+                    standardize_orientation,
+                    remove_text_markers,
+                    correct_illumination,
+                    enhance_contrast,
+                    apply_lung_segmentation,
+                    normalize_histogram,
+                    apply_edge_enhancement)
 
 def create_pipeline(**kwargs) -> Pipeline:
-    return pipeline([])
+    return pipeline(
+        [
+            node(
+                func=preprocess_train_data,
+                inputs=["raw_train_normal", "raw_train_pneumonia"],
+                outputs="basic_preprocessed_train_data",
+                name="basic_preprocess_train_data_node",
+            ),
+            node(
+                func=preprocess_val_data,
+                inputs=["raw_val_normal", "raw_val_pneumonia"],
+                outputs="basic_preprocessed_val_data",
+                name="basic_preprocess_val_data_node",
+            ),
+            node(
+                func=preprocess_test_data,
+                inputs=["raw_test_normal", "raw_test_pneumonia"],
+                outputs="basic_preprocessed_test_data",
+                name="basic_preprocess_test_data_node",
+            ),
+
+            node(
+                func=standardize_orientation,
+                inputs="basic_preprocessed_train_data",
+                outputs="train_std_orientation",
+                name="train_standardize_orientation_node",
+            ),
+            node(
+                func=remove_text_markers,
+                inputs="train_std_orientation",
+                outputs="train_no_markers",
+                name="train_remove_markers_node",
+            ),
+            node(
+                func=correct_illumination,
+                inputs="train_no_markers",
+                outputs="train_illumination_corrected",
+                name="train_correct_illumination_node",
+            ),
+            node(
+                func=enhance_contrast,
+                inputs="train_illumination_corrected",
+                outputs="train_contrast_enhanced",
+                name="train_enhance_contrast_node",
+            ),
+            node(
+                func=apply_lung_segmentation,
+                inputs="train_contrast_enhanced",
+                outputs="train_lung_segmented",
+                name="train_lung_segmentation_node",
+            ),
+            node(
+                func=normalize_histogram,
+                inputs="train_lung_segmented",
+                outputs="train_histogram_normalized",
+                name="train_normalize_histogram_node",
+            ),
+            node(
+                func=apply_edge_enhancement,
+                inputs="train_histogram_normalized",
+                outputs="preprocessed_train_data",
+                name="train_edge_enhancement_node",
+            ),
+
+            node(
+                func=standardize_orientation,
+                inputs="basic_preprocessed_val_data",
+                outputs="val_std_orientation",
+                name="val_standardize_orientation_node",
+            ),
+            node(
+                func=remove_text_markers,
+                inputs="val_std_orientation",
+                outputs="val_no_markers",
+                name="val_remove_markers_node",
+            ),
+            node(
+                func=correct_illumination,
+                inputs="val_no_markers",
+                outputs="val_illumination_corrected",
+                name="val_correct_illumination_node",
+            ),
+            node(
+                func=enhance_contrast,
+                inputs="val_illumination_corrected",
+                outputs="val_contrast_enhanced",
+                name="val_enhance_contrast_node",
+            ),
+            node(
+                func=apply_lung_segmentation,
+                inputs="val_contrast_enhanced",
+                outputs="val_lung_segmented",
+                name="val_lung_segmentation_node",
+            ),
+            node(
+                func=normalize_histogram,
+                inputs="val_lung_segmented",
+                outputs="val_histogram_normalized",
+                name="val_normalize_histogram_node",
+            ),
+            node(
+                func=apply_edge_enhancement,
+                inputs="val_histogram_normalized",
+                outputs="preprocessed_val_data",
+                name="val_edge_enhancement_node",
+            ),
+
+            node(
+                func=standardize_orientation,
+                inputs="basic_preprocessed_test_data",
+                outputs="test_std_orientation",
+                name="test_standardize_orientation_node",
+            ),
+            node(
+                func=remove_text_markers,
+                inputs="test_std_orientation",
+                outputs="test_no_markers",
+                name="test_remove_markers_node",
+            ),
+            node(
+                func=correct_illumination,
+                inputs="test_no_markers",
+                outputs="test_illumination_corrected",
+                name="test_correct_illumination_node",
+            ),
+            node(
+                func=enhance_contrast,
+                inputs="test_illumination_corrected",
+                outputs="test_contrast_enhanced",
+                name="test_enhance_contrast_node",
+            ),
+            node(
+                func=apply_lung_segmentation,
+                inputs="test_contrast_enhanced",
+                outputs="test_lung_segmented",
+                name="test_lung_segmentation_node",
+            ),
+            node(
+                func=normalize_histogram,
+                inputs="test_lung_segmented",
+                outputs="test_histogram_normalized",
+                name="test_normalize_histogram_node",
+            ),
+            node(
+                func=apply_edge_enhancement,
+                inputs="test_histogram_normalized",
+                outputs="preprocessed_test_data",
+                name="test_edge_enhancement_node",
+            ),
+        ]
+    )

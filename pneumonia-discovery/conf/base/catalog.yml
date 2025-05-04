@@ -1,49 +1,121 @@
 raw_train_normal:
-  type: kedro.extras.datasets.pillow.ImageDataSet
+  type: pillow.ImageDataset
   filepath: data/01_raw/train/NORMAL/
-  load_args:
-    mode: "r"
 
 raw_train_pneumonia:
-  type: kedro.extras.datasets.pillow.ImageDataSet
+  type: pillow.ImageDataset
   filepath: data/01_raw/train/PNEUMONIA/
-  load_args:
-    mode: "r"
 
 raw_val_normal:
-  type: kedro.extras.datasets.pillow.ImageDataSet
+  type: pillow.ImageDataset
   filepath: data/01_raw/val/NORMAL/
-  load_args:
-    mode: "r"
 
 raw_val_pneumonia:
-  type: kedro.extras.datasets.pillow.ImageDataSet
+  type: pillow.ImageDataset
   filepath: data/01_raw/val/PNEUMONIA/
-  load_args:
-    mode: "r"
 
 raw_test_normal:
-  type: kedro.extras.datasets.pillow.ImageDataSet
+  type: pillow.ImageDataset
   filepath: data/01_raw/test/NORMAL/
-  load_args:
-    mode: "r"
 
 raw_test_pneumonia:
-  type: kedro.extras.datasets.pillow.ImageDataSet
+  type: pillow.ImageDataset
   filepath: data/01_raw/test/PNEUMONIA/
-  load_args:
-    mode: "r"
+
+basic_preprocessed_train_data:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/basic_preprocessed_train_data.pkl
+
+basic_preprocessed_val_data:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/basic_preprocessed_val_data.pkl
+
+basic_preprocessed_test_data:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/basic_preprocessed_test_data.pkl
+
+train_std_orientation:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/train_std_orientation.pkl
+
+train_no_markers:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/train_no_markers.pkl
+
+train_illumination_corrected:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/train_illumination_corrected.pkl
+
+train_contrast_enhanced:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/train_contrast_enhanced.pkl
+
+train_lung_segmented:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/train_lung_segmented.pkl
+
+train_histogram_normalized:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/train_histogram_normalized.pkl
 
 preprocessed_train_data:
-  type: kedro.extras.datasets.pickle.PickleDataSet
+  type: pickle.PickleDataSet
   filepath: data/02_intermediate/preprocessed_train_data.pkl
 
+val_std_orientation:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/val_std_orientation.pkl
+
+val_no_markers:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/val_no_markers.pkl
+
+val_illumination_corrected:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/val_illumination_corrected.pkl
+
+val_contrast_enhanced:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/val_contrast_enhanced.pkl
+
+val_lung_segmented:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/val_lung_segmented.pkl
+
+val_histogram_normalized:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/val_histogram_normalized.pkl
+
 preprocessed_val_data:
-  type: kedro.extras.datasets.pickle.PickleDataSet
+  type: pickle.PickleDataSet
   filepath: data/02_intermediate/preprocessed_val_data.pkl
 
+test_std_orientation:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/test_std_orientation.pkl
+
+test_no_markers:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/test_no_markers.pkl
+
+test_illumination_corrected:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/test_illumination_corrected.pkl
+
+test_contrast_enhanced:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/test_contrast_enhanced.pkl
+
+test_lung_segmented:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/test_lung_segmented.pkl
+
+test_histogram_normalized:
+  type: pickle.PickleDataSet
+  filepath: data/02_intermediate/test_histogram_normalized.pkl
+
 preprocessed_test_data:
-  type: kedro.extras.datasets.pickle.PickleDataSet
+  type: pickle.PickleDataSet
   filepath: data/02_intermediate/preprocessed_test_data.pkl
 
 
