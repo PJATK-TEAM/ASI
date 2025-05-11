@@ -1,42 +1,54 @@
 from typing import Dict, Any, Tuple, List
 
+import os
 import cv2
 import numpy as np
 from skimage import exposure, filters
+from PIL import Image
 
-def preprocess_train_data(raw_train_normal: List[np.ndarray], raw_train_pneumonia: List[np.ndarray]) -> Dict[str, Any]:
-    images = np.concatenate([np.array(raw_train_normal), np.array(raw_train_pneumonia)], axis=0)
-    labels = [0] * len(raw_train_normal) + [1] * len(raw_train_pneumonia)
-    return {"images": images, "labels": labels}
+def load_images_from_directory(directory_path: str) -> Dict[str, Any]:
+    images = []
+    filenames = []
+    for file_name in os.listdir(directory_path):
+        file_path = os.path.join(directory_path, file_name)
+        if file_name.lower().endswith(('.jpg', '.jpeg', '.png')):
+            try:
+                with Image.open(file_path) as img:
+                    img = img.resize((224, 224)).convert("RGB")
+                    images.append(np.array(img))
+                    filenames.append(file_name)
+            except Exception as e:
+                print(f"Error loading image {file_name}: {e}")
+    return {"images": np.array(images), "filenames": filenames}
 
-def preprocess_val_data(raw_val_normal: List[np.ndarray], raw_val_pneumonia: List[np.ndarray]) -> Dict[str, Any]:
-    images = np.concatenate([np.array(raw_val_normal), np.array(raw_val_pneumonia)], axis=0)
-    labels = [0] * len(raw_val_normal) + [1] * len(raw_val_pneumonia)
-    return {"images": images, "labels": labels}
+def preprocess_data(raw_normal: Dict[str, Any], raw_pneumonia: Dict[str, Any]) -> Dict[str, Any]:
+    images = np.concatenate([raw_normal["images"], raw_pneumonia["images"]], axis=0)
+    labels = [0] * len(raw_normal["images"]) + [1] * len(raw_pneumonia["images"])
+    filenames = raw_normal["filenames"] + raw_pneumonia["filenames"]
+    return {"images": images, "labels": labels, "filenames": filenames}
 
-def preprocess_test_data(raw_test_normal: List[np.ndarray], raw_test_pneumonia: List[np.ndarray]) -> Dict[str, Any]:
-    images = np.concatenate([np.array(raw_test_normal), np.array(raw_test_pneumonia)], axis=0)
-    labels = [0] * len(raw_test_normal) + [1] * len(raw_test_pneumonia)
-    return {"images": images, "labels": labels}
-
-def convert_to_grayscale(img: Any) -> np.ndarray:
-    if img.shape[-1] == 1:
-        return (img[:, :, 0] * 255).astype(np.uint8)
-    return cv2.cvtColor((img * 255).astype(np.uint8), cv2.COLOR_RGB2GRAY)
+def convert_to_grayscale(img: np.ndarray) -> np.ndarray:
+    if len(img.shape) == 2:
+        return img
+    elif img.shape[-1] == 1:
+        return img[:, :, 0]
+    else:
+        return cv2.cvtColor((img * 255).astype(np.uint8), cv2.COLOR_RGB2GRAY)
 
 def standardize_orientation(data: Dict[str, Any]) -> Dict[str, Any]:
     images = data["images"]
     standardized_images = np.zeros_like(images)
 
-    for i in range(images.shape[0]):
+    for i in range(len(images)):
         img = images[i]
         gray = convert_to_grayscale(img)
 
+        # Now gray is 2D, can be sliced correctly
         left_side = gray[:, :gray.shape[1]//4]
-        right_side = gray[:, 3*gray.shape[1]//4]
+        right_side = gray[:, 3*gray.shape[1]//4:]
 
-        top_left = left_side[:left_side.shape[0] // 4, :]
-        top_right = right_side[:right_side.shape[0] // 4, :]
+        top_left = left_side[:left_side.shape[0]//4]
+        top_right = right_side[:right_side.shape[0]//4]
 
         if np.mean(top_left) > np.mean(top_right):
             standardized_images[i] = np.flip(img, axis=1)

@@ -1,32 +1,65 @@
 from kedro.pipeline import node, Pipeline, pipeline  # noqa
-from .nodes import (preprocess_train_data,
-                    preprocess_val_data,
-                    preprocess_test_data,
-                    standardize_orientation,
+from .nodes import (standardize_orientation,
                     remove_text_markers,
                     correct_illumination,
                     enhance_contrast,
                     apply_lung_segmentation,
                     normalize_histogram,
-                    apply_edge_enhancement)
+                    apply_edge_enhancement, load_images_from_directory, preprocess_data)
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
         [
             node(
-                func=preprocess_train_data,
+                func=load_images_from_directory,
+                inputs="params:raw_train_normal_path",
+                outputs="raw_train_normal",
+                name="load_raw_train_normal_images",
+            ),
+            node(
+                func=load_images_from_directory,
+                inputs="params:raw_train_pneumonia_path",
+                outputs="raw_train_pneumonia",
+                name="load_raw_train_pneumonia_images",
+            ),
+            node(
+                func=load_images_from_directory,
+                inputs="params:raw_val_normal_path",
+                outputs="raw_val_normal",
+                name="load_raw_val_normal_images",
+            ),
+            node(
+                func=load_images_from_directory,
+                inputs="params:raw_val_pneumonia_path",
+                outputs="raw_val_pneumonia",
+                name="load_raw_val_pneumonia_images",
+            ),
+            node(
+                func=load_images_from_directory,
+                inputs="params:raw_test_normal_path",
+                outputs="raw_test_normal",
+                name="load_raw_test_normal_images",
+            ),
+            node(
+                func=load_images_from_directory,
+                inputs="params:raw_test_pneumonia_path",
+                outputs="raw_test_pneumonia",
+                name="load_raw_test_pneumonia_images",
+            ),
+            node(
+                func=preprocess_data,
                 inputs=["raw_train_normal", "raw_train_pneumonia"],
                 outputs="basic_preprocessed_train_data",
                 name="basic_preprocess_train_data_node",
             ),
             node(
-                func=preprocess_val_data,
+                func=preprocess_data,
                 inputs=["raw_val_normal", "raw_val_pneumonia"],
                 outputs="basic_preprocessed_val_data",
                 name="basic_preprocess_val_data_node",
             ),
             node(
-                func=preprocess_test_data,
+                func=preprocess_data,
                 inputs=["raw_test_normal", "raw_test_pneumonia"],
                 outputs="basic_preprocessed_test_data",
                 name="basic_preprocess_test_data_node",
