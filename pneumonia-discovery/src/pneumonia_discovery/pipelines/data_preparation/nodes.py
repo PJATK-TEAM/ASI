@@ -1,10 +1,11 @@
-from typing import Dict, Any, Tuple, List
-
 import os
+from typing import Dict, Any, Tuple
+
 import cv2
 import numpy as np
-from skimage import exposure, filters
 from PIL import Image
+from skimage import exposure, filters
+
 
 def load_images_from_directory(directory_path: str) -> Dict[str, Any]:
     images = []
@@ -43,7 +44,6 @@ def standardize_orientation(data: Dict[str, Any]) -> Dict[str, Any]:
         img = images[i]
         gray = convert_to_grayscale(img)
 
-        # Now gray is 2D, can be sliced correctly
         left_side = gray[:, :gray.shape[1]//4]
         right_side = gray[:, 3*gray.shape[1]//4:]
 
