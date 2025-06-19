@@ -94,5 +94,19 @@ preprocessed_test_data:
   type: pickle.PickleDataset
   filepath: data/02_intermediate/preprocessed_test_data.pkl
 
+preprocessed_data:
+  type: pickle.PickleDataset
+  filepath: data/03_processed/preprocessed_data.pkl
 
+train_dataframe:
+  type: pandas.CSVDataset
+  filepath: data/05_model_input/train_dataframe.csv
+
+model_autogluon:
+  type: pickle.PickleDataset
+  filepath: data/06_models/model_autogluon.pkl
+
+train_predictions:
+  type: pandas.CSVDataset
+  filepath: data/07_model_output/train_predictions.csv
 

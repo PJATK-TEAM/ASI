@@ -5,7 +5,9 @@ from .nodes import (standardize_orientation,
                     enhance_contrast,
                     apply_lung_segmentation,
                     normalize_histogram,
-                    apply_edge_enhancement, load_images_from_directory, preprocess_data)
+                    apply_edge_enhancement, load_images_from_directory, preprocess_data,
+                    create_dataframe_from_preprocessed,
+                    save_images_to_disk)
 
 def create_pipeline(**kwargs) -> Pipeline:
     return pipeline(
@@ -192,6 +194,6 @@ def create_pipeline(**kwargs) -> Pipeline:
                 inputs="test_histogram_normalized",
                 outputs="preprocessed_test_data",
                 name="test_edge_enhancement_node",
-            ),
+            )
         ]
     )

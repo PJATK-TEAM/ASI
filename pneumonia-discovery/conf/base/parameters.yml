@@ -4,3 +4,6 @@
   raw_val_pneumonia_path: data/01_raw/val/PNEUMONIA
   raw_test_normal_path: data/01_raw/test/NORMAL/
   raw_test_pneumonia_path: data/01_raw/test/PNEUMONIA
+  train_images_output_dir: "data/03_processed/train"
+  val_images_output_dir: "data/03_processed/val"
+  test_images_output_dir: "data/03_processed/test"

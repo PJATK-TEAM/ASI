@@ -1,5 +1,7 @@
 import os
 from typing import Dict, Any, Tuple
+import pandas as pd
+from typing import Dict, Any
 
 import cv2
 import numpy as np
@@ -340,3 +342,48 @@ def normalize_by_reference(data: Dict[str, Any]) -> Dict[str, Any]:
         "labels": data["labels"],
         "filenames": data["filenames"]
     }
+
+def create_dataframe_from_preprocessed(data: Dict[str, Any]) -> pd.DataFrame:
+    """
+    Tworzy DataFrame z przetworzonych danych.
+    
+    Args:
+        data: Słownik z kluczami 'filenames' i 'labels'.
+    
+    Returns:
+        pd.DataFrame z kolumnami 'filename' i 'label'.
+    """
+    filenames = data.get("filenames", [])
+    labels = data.get("labels", [])
+
+    df = pd.DataFrame({
+        "filename": filenames,
+        "label": labels
+    })
+
+    return df
+
+def save_images_to_disk(data: dict, output_dir: str) -> dict:
+    import os
+    import cv2
+    import numpy as np
+
+    os.makedirs(output_dir, exist_ok=True)
+    images = data.get("images")
+    filenames = data.get("filenames")
+
+    for img, fname in zip(images, filenames):
+        if img.dtype == np.float32 or img.dtype == np.float64:
+            img_to_save = (img * 255).astype(np.uint8)
+        else:
+            img_to_save = img
+
+        if len(img_to_save.shape) == 3 and img_to_save.shape[2] == 3:
+            img_to_save = cv2.cvtColor(img_to_save, cv2.COLOR_RGB2BGR)
+
+        save_path = os.path.join(output_dir, fname)
+        cv2.imwrite(save_path, img_to_save)
+
+    print(f"Saved {len(filenames)} images to {output_dir}")
+
+    return data

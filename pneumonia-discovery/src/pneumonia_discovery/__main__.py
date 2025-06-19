@@ -7,6 +7,8 @@ from typing import Any
 
 from kedro.framework.cli.utils import find_run_command
 from kedro.framework.project import configure_project
+from kedro.extras.datasets.pickle import PickleDataSet
+
 
 
 def main(*args, **kwargs) -> Any:
