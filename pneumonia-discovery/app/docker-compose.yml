@@ -1,0 +1,28 @@
+services:
+  frontend:
+    container_name: asi-frontend
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8501:8501"
+    depends_on:
+      - backend
+    networks:
+      - pneumonia-network
+
+  backend:
+    container_name: asi-backend
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    env_file:
+      - ./backend/.env
+    ports:
+      - "8000:8000"
+    networks:
+      - pneumonia-network
+
+networks:
+  pneumonia-network:
+    driver: bridge
