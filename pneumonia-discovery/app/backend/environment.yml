@@ -40,10 +40,10 @@ dependencies:
   - pydantic=2.10.3
   - pydantic-core=2.27.1
   - pygments=2.19.1
-  - python=3.9.21
-  - python-dotenv=1.1.0
-  - python-multipart=0.0.20
-  - python_abi=3.9
+  - python
+  - python-dotenv
+  - python-multipart
+  - python_abi
   - readline=8.2
   - rich=14.0.0
   - setuptools=75.8.0
@@ -100,7 +100,7 @@ dependencies:
       - tensorflow-io-gcs-filesystem==0.37.1
       - termcolor==3.0.1
       - urllib3==2.4.0
-      - uvicorn==0.34.0
+      - uvicorn
       - watchfiles==1.0.4
       - websockets==15.0.1
       - werkzeug==3.1.3
