@@ -23,7 +23,7 @@ jobs:
       
       run: |
         ssh -o StrictHostKeyChecking=no azureuser@20.215.249.162 << 'EOF'
-          cd /home/azureuser/pneumonia/ASI
+          cd /home/azureuser/pneumonia/ASI/pneumonia-discovery/app
           
           echo "AZURE_STORAGE_CONNECTION_STRING='${AZURE_STORAGE_CONNECTION_STRING}'" > backend/.env
           
