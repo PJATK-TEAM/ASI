@@ -44,6 +44,7 @@ async def classify(file: UploadFile = File(...)):
     await file.close()
 
     result = predict_image(content)
+    print(result)
     #save_log_to_blob(file.filename, result)
 
     return {"prediction": result}
@@ -71,14 +72,27 @@ def get_classification_history():
         return {"error": f"Failed to fetch history: {str(e)}"}
 
 
-def predict_image(file) -> str:
+def predict_image(image_bytes: bytes) -> dict:
     with tempfile.NamedTemporaryFile(delete=False, suffix=".png") as tmp:
-        tmp.write(file.read())
+        tmp.write(image_bytes)
         image_path = tmp.name
 
     df = pd.DataFrame({"image": [image_path]})
-    prediction = predictor.predict(df)
-    return str(prediction[0])
+
+    probs = predictor.predict_proba(df, as_pandas=True, as_multiclass=True)
+    row = probs.iloc[0]  # np. {'0': 0.0001, '1': 0.9999}
+
+    # Mapowanie indeksów na klasy
+    index_to_class = {0: "Normal", 1: "Pneumonia"}
+
+    # Przetłumacz indeksy na klasy
+    result = {}
+    for col in row.index:
+        class_name = index_to_class[int(col)]
+        result[class_name] = float(row[col])
+
+    return result
+
 
 def save_log_to_blob(filename: str, prediction: dict):
     log_entry = {
