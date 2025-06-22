@@ -17,10 +17,10 @@ import pandas as pd
 app = FastAPI(title="Pneumonia Detector API", version="1.0.0")
 MAX_FILE_SIZE = 5 * 1024 * 1024  # 5MB
 
-#load_dotenv()
+load_dotenv()
 
-#blob_service = BlobServiceClient.from_connection_string(os.getenv("AZURE_STORAGE_CONNECTION_STRING"))
-#container_client = blob_service.get_container_client("logs")
+blob_service = BlobServiceClient.from_connection_string(os.getenv("AZURE_STORAGE_CONNECTION_STRING"))
+container_client = blob_service.get_container_client("logs")
 
 
 
@@ -45,7 +45,7 @@ async def classify(file: UploadFile = File(...)):
 
     result = predict_image(content)
     print(result)
-    #save_log_to_blob(file.filename, result)
+    save_log_to_blob(file.filename, result)
 
     return {"prediction": result}
 
@@ -53,17 +53,17 @@ async def classify(file: UploadFile = File(...)):
 def get_classification_history():
     logs = []
     try:
-        #blobs = container_client.list_blobs()
-        #for blob in blobs:
-        #    blob_client = container_client.get_blob_client(blob.name)
-        #    content = blob_client.download_blob().readall()
-        #    data = json.loads(content)
+        blobs = container_client.list_blobs()
+        for blob in blobs:
+            blob_client = container_client.get_blob_client(blob.name)
+            content = blob_client.download_blob().readall()
+            data = json.loads(content)
 
-        #    logs.append({
-        #        "file_name": data.get("filename"),
-        #        "timestamp": data.get("timestamp"),
-        #        "result": data.get("prediction")
-        #    })
+            logs.append({
+                "file_name": data.get("filename"),
+                "timestamp": data.get("timestamp"),
+                "result": data.get("prediction")
+            })
 
         # Posortuj po najnowszych
         logs = sorted(logs, key=lambda x: x["timestamp"], reverse=True)
@@ -101,12 +101,12 @@ def save_log_to_blob(filename: str, prediction: dict):
         "prediction": prediction
     }
 
-    #blob_name = f"{uuid.uuid4()}.json"
-    #blob_data = json.dumps(log_entry)
+    blob_name = f"{uuid.uuid4()}.json"
+    blob_data = json.dumps(log_entry)
 
-    #container_client.upload_blob(
-    #    name=blob_name,
-    #    data=blob_data,
-    #    overwrite=True,
-    #    content_type="application/json"
-    #)
+    container_client.upload_blob(
+        name=blob_name,
+        data=blob_data,
+        overwrite=True,
+        content_type="application/json"
+    )
