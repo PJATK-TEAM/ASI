@@ -1,0 +1,33 @@
+name: Deploy to Azure VM
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.9.0
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Deploy to Azure VM
+      env:
+        AZURE_STORAGE_CONNECTION_STRING: ${{ secrets.AZURE_STORAGE_CONNECTION_STRING }}
+      
+      run: |
+        ssh -o StrictHostKeyChecking=no azureuser@20.215.249.162 << 'EOF'
+          cd /home/azureuser/pneumonia/ASI
+          
+          echo "AZURE_STORAGE_CONNECTION_STRING='${AZURE_STORAGE_CONNECTION_STRING}'" > backend/.env
+          
+          git pull origin main
+          docker-compose down
+          docker-compose up -d --build
+        EOF
