@@ -22,6 +22,8 @@ services:
       - "8000:8000"
     networks:
       - pneumonia-network
+    volumes:
+      - ../autogluon_model:/autogluon_model
 
 networks:
   pneumonia-network:
